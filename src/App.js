@@ -1,42 +1,72 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import './App.css';
 
 const App = () => {
 
   const [data, setData] = useState([]);
   const [write, setWrite] = useState({
-    writer : "",
-    content : "",
+    writer:"",
+    content:"",
   });
 
   const onchange = (e) => {
-    console.log("his");
     setWrite({
       ...write,
       [e.target.name] : e.target.value,
     })
   }
 
-  useEffect( () => {
-    console.log(write)
-  },[write])
+  const onEnter = (e) => {
+    if(e.key === 'Enter')
+      sendOne();
+  }
 
-  const sendList = () => {
-    const axiosSendList = async () => {
-      const result = await axios.post("http://localhost:9001/insert",write);
-      console.log(result);
-      getList();
+  const sendOne = () => {
+    if(write.writer==="")
+    {
+      alert("작성자를 입력해주세요");
+      document.getElementById("writer").focus();
+      return;
     }
-    axiosSendList();
+    if(write.content==="")
+    {
+      alert("글내용을 입력해주세요");
+      document.getElementById("content").focus();
+      return;
+    }
+    const axiosSendOne = async () => {
+      await axios.post("http://localhost:9001/insert",write);
+      getList();
+      setWrite({
+        writer:"",
+        content:"",
+      })
+    }
+    axiosSendOne();
   }
 
   const updateOne = (sid) => {
+    if(write.writer==="")
+    {
+      alert("수정할 작성자명을 입력해주세요");
+      document.getElementById("writer").focus();
+      return;
+    }
+    if(write.content==="")
+    {
+      alert("수정할 글내용을 입력해주세요");
+      document.getElementById("content").focus();
+      return;
+    }
     write.sid = sid;
     const axiosUpdate = async () => {
-      const result = await axios.put("http://localhost:9001/update",write)
+      await axios.put("http://localhost:9001/update",write)
       getList();
+      setWrite({
+        writer:"",
+        content:"",
+      })
     }
     axiosUpdate();
   }
@@ -65,13 +95,15 @@ const App = () => {
 
   return (
     <div className="App">
-      <table className="table table-bordered" style={{width:'1000px',margin:'0 auto',marginTop:'50px'}}>
-        <thead>
+      <div style={{width:'1000px',margin:'0 auto'}}>
+      <h2 style={{marginTop:'50px'}}>Simple Board made by CHJ</h2>
+      <table className="table table-bordered table-hover" style={{width:'1000px',margin:'0 auto'}}>
+        <thead style={{backgroundColor:'lightskyblue',fontWeight:'bold'}}>
           <tr>
             <td style={{width:'100px'}}>글번호</td>
             <td style={{width:'150px'}}>작성자</td>
             <td style={{width:'600px'}}>내용</td>
-            <td style={{width:'150px'}}>작성일</td>
+            <td style={{width:'150px'}}>작성일시</td>
             <td style={{width:'200px'}}>관리</td>
           </tr>
         </thead>
@@ -99,9 +131,23 @@ const App = () => {
         </tbody>
       </table>
       <br/>
-      작성자:<input name="writer" type="text" onChange={onchange}/>
-      글내용:<input name="content" type="text" onChange={onchange}/>
-      <button className="btn btn-success" style={{marginLeft:'800px'}} onClick={sendList}>글쓰기</button>
+      <h2>게시물 작성/수정</h2>
+      <table className="table table-bordered">
+          <tbody>
+            <tr>
+              <td>작성자</td>
+              <td><input id="writer" name="writer" type="text" onKeyPress={onEnter} onChange={onchange} value={write.writer}/></td>
+              <td>글내용</td>
+              <td><input id="content" name="content" type="text" onKeyPress={onEnter} onChange={onchange} value={write.content}/></td>
+              <td>
+              <button className="btn btn-success"  onClick={sendOne}>글쓰기</button>
+              </td>
+            </tr>
+          </tbody>
+      </table>
+      
+      
+      </div>
     </div>
   );
 }
