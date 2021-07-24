@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 
 const App = () => {
 
+  const server = "http://3.38.34.79:9001";
+
   const [data, setData] = useState([]);
   const [write, setWrite] = useState({
     writer:"",
@@ -36,7 +38,7 @@ const App = () => {
       return;
     }
     const axiosSendOne = async () => {
-      await axios.post("http://localhost:9001/insert",write);
+      await axios.post(server+"/insert",write);
       getList();
       setWrite({
         writer:"",
@@ -61,7 +63,7 @@ const App = () => {
     }
     write.sid = sid;
     const axiosUpdate = async () => {
-      await axios.put("http://localhost:9001/update",write)
+      await axios.put(server+"/update",write)
       getList();
       setWrite({
         writer:"",
@@ -73,7 +75,7 @@ const App = () => {
 
   const deleteOne = (sid) => {
     const axiosDelete = async () => {
-      const result = await axios.delete("http://localhost:9001/delete/"+sid)
+      const result = await axios.delete(server+"/delete/"+sid)
       console.log(result);
       getList();
     }
@@ -82,7 +84,7 @@ const App = () => {
 
   const getList = () => {
     const axiosGetList = async () => {
-      const result = await axios.get("http://localhost:9001/board");
+      const result = await axios.get(server+"/board");
       console.log(result.data);
       setData(result.data);
     }
