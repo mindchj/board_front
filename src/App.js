@@ -246,6 +246,7 @@ const App = () => {
     document.getElementById("deleteform").hidden=true;
     document.getElementById("login").hidden=true;
     document.getElementById("signup").hidden=true;
+    document.getElementById("myinfo").hidden=true;
   },[])
 
   const openLoginForm = () => {
